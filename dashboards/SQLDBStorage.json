@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1563848248207,
+  "iteration": 1563899057828,
   "links": [
     {
       "asDropdown": true,
@@ -2185,14 +2185,14 @@
           "value": "sqlscale"
         },
         "datasource": "InfluxDB",
-        "definition": "SHOW TAG VALUES  FROM \"sqlserver_azurestats\" WITH KEY=\"sql_instance\" WHERE $timeFilter",
+        "definition": " select sql_instance from (select  \"sql_instance\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" where  \"engine_edition\" = 5 and $timeFilter  GROUP BY sql_instance)",
         "hide": 0,
         "includeAll": false,
-        "label": "InstanceName",
+        "label": "ServerName",
         "multi": false,
         "name": "InstanceName",
         "options": [],
-        "query": "SHOW TAG VALUES  FROM \"sqlserver_azurestats\" WITH KEY=\"sql_instance\" WHERE $timeFilter",
+        "query": " select sql_instance from (select  \"sql_instance\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" where  \"engine_edition\" = 5 and $timeFilter  GROUP BY sql_instance)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2210,14 +2210,14 @@
           "value": "hstest"
         },
         "datasource": "InfluxDB",
-        "definition": "SHOW TAG VALUES  FROM \"sqlserver_server_properties\" WITH KEY=\"database_name\"  where sql_instance =~  /$InstanceName/",
+        "definition": "SHOW TAG VALUES  FROM \"sqlserver_server_properties\" WITH KEY=\"database_name\"  WHERE $timeFilter  AND sql_instance =~  /$InstanceName/",
         "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "DatabaseName",
         "options": [],
-        "query": "SHOW TAG VALUES  FROM \"sqlserver_server_properties\" WITH KEY=\"database_name\"  where sql_instance =~  /$InstanceName/",
+        "query": "SHOW TAG VALUES  FROM \"sqlserver_server_properties\" WITH KEY=\"database_name\"  WHERE $timeFilter  AND sql_instance =~  /$InstanceName/",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2262,5 +2262,5 @@
   "timezone": "",
   "title": "SQL DB  Storage",
   "uid": "T4dUNDDiz",
-  "version": 8
+  "version": 9
 }
