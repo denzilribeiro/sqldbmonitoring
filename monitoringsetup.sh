@@ -23,12 +23,12 @@ sudo ufw reload
 
 echo "****** copying telegraf.conf sample for SQL, original conf renamed to /etc/telegraf_original.conf  ****/"
 sudo mv /etc/telegraf/telegraf.conf /etc/telegraf/telegraf_original.conf 
-sudo cp $HOME/sqlmimonitoring/telegraf/telegraf.conf /etc/telegraf/telegraf.conf 
+sudo cp $HOME/sqldbmonitoring/telegraf/telegraf.conf /etc/telegraf/telegraf.conf 
 sudo chown root:root /etc/telegraf/telegraf.conf 
 sudo chmod 644 /etc/telegraf/telegraf.conf
 
 echo "********Pulling grafana containger ****************"
-cd $HOME/sqlmimonitoring/grafana
+cd $HOME/sqldbmonitoring/grafana
 sudo ./rungrafana.sh
 
 
