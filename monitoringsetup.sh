@@ -3,7 +3,7 @@
 echo "**********Starting Setup **********"
 dpkg-query -l docker.io
 
-if [ $? -eq 0 ]
+if [ $? -ne 0 ]
 then
   echo "***********Installing Docker***************"
   sudo apt-get install docker.io -y
@@ -14,7 +14,16 @@ fi
 echo "************Installing Telegraf Nightly***********"
 cd $HOME
 wget https://dl.influxdata.com/telegraf/nightlies/telegraf_nightly_amd64.deb
-sudo dpkg -i telegraf_nightly_amd64.deb
+dpkg-query -l telegraf
+
+
+if [ $? -ne 0 ]
+then
+  echo "***********Installing telegraf***************"
+  sudo dpkg -i telegraf_nightly_amd64.deb
+else
+  echo "Telegraf already installed"
+fi
 
 
 echo "********* Firewall rule for Grafana port **********"
