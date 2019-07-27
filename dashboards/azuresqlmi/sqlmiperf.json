@@ -12,12 +12,12 @@
       }
     ]
   },
-  "description": "",
+  "description": "This Dashboard is for Azure SQL Managed Instances , will also work with SQL on VM's or On-premise SQL Server",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 1,
-  "iteration": 1563848137495,
+  "id": 4,
+  "iteration": 1564251982146,
   "links": [
     {
       "asDropdown": true,
@@ -25,10 +25,10 @@
       "includeVars": true,
       "keepTime": true,
       "tags": [
-        "Azure SQL DB"
+        "SQLMI"
       ],
       "targetBlank": false,
-      "title": "Other SQLDB Dashboards",
+      "title": "Other Managed Instance Dashboards",
       "type": "dashboards"
     }
   ],
@@ -41,9 +41,9 @@
         "x": 0,
         "y": 0
       },
-      "id": 65,
+      "id": 34,
       "panels": [],
-      "title": "Azure SQL DB Properties",
+      "title": "Managed Instance Overview",
       "type": "row"
     },
     {
@@ -108,7 +108,14 @@
       "tableColumn": "",
       "targets": [
         {
-          "groupBy": [],
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            }
+          ],
           "measurement": "sqlserver_server_properties",
           "orderByTime": "ASC",
           "policy": "default",
@@ -132,13 +139,7 @@
             {
               "key": "sql_instance",
               "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
+              "value": "/$InstanceName$/"
             }
           ]
         }
@@ -256,18 +257,12 @@
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
             }
           ]
         }
       ],
       "thresholds": "",
-      "title": "DB Memory",
+      "title": "Server Memory",
       "type": "singlestat",
       "valueFontSize": "50%",
       "valueMaps": [
@@ -299,7 +294,7 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 3,
+        "w": 2,
         "x": 4,
         "y": 1
       },
@@ -345,7 +340,7 @@
           "measurement": "sqlserver_server_properties",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SHOW  TAG VALUES FROM sqlserver_server_properties WITH KEY = \"sku\" WHERE \"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/  AND $timeFilter",
+          "query": "SHOW TAG VALUES WITH KEY = \"sku\" WHERE \"sql_instance\" =~ /^$InstanceName$/  AND $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -353,7 +348,7 @@
             [
               {
                 "params": [
-                  "sku"
+                  "TotalStorageMB"
                 ],
                 "type": "field"
               }
@@ -364,12 +359,6 @@
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
             }
           ]
         }
@@ -407,8 +396,8 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 3,
-        "x": 7,
+        "w": 2,
+        "x": 6,
         "y": 1
       },
       "id": 44,
@@ -466,7 +455,7 @@
           "measurement": "sqlserver_server_properties",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SHOW  TAG VALUES from sqlserver_server_properties WITH KEY = \"hardware_type\" WHERE \"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/  AND $timeFilter",
+          "query": "SHOW TAG VALUES WITH KEY = \"hardware_type\" WHERE \"sql_instance\" =~ /^$InstanceName$/  AND $timeFilter AND \"hardware_type\" != 'HYPERVISOR'",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -474,7 +463,7 @@
             [
               {
                 "params": [
-                  "value"
+                  "hardware_type"
                 ],
                 "type": "field"
               },
@@ -527,7 +516,7 @@
       "gridPos": {
         "h": 2,
         "w": 2,
-        "x": 10,
+        "x": 8,
         "y": 1
       },
       "id": 43,
@@ -572,8 +561,6 @@
           "measurement": "sqlserver_server_properties",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"total_storage_mb\") FROM \"sqlserver_server_properties\" WHERE (\"sql_instance\" =~ /^$InstanceName$/) AND $timeFilter",
-          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -622,7 +609,7 @@
         "#d44a3a"
       ],
       "datasource": "InfluxDB",
-      "format": "bytes",
+      "format": "mbytes",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -632,11 +619,11 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 3,
-        "x": 0,
-        "y": 3
+        "w": 2,
+        "x": 10,
+        "y": 1
       },
-      "id": 72,
+      "id": 49,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -675,7 +662,228 @@
       "targets": [
         {
           "groupBy": [],
-          "measurement": "sqlserver_db_resource_governance",
+          "measurement": "sqlserver_server_properties",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "available_storage_mb"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "title": "Available  Storage",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": true,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "InfluxDB",
+      "format": "short",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 12,
+        "y": 1
+      },
+      "id": 45,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "sqlserver_server_properties",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "db_online"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "title": "# Databases",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": true,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "InfluxDB",
+      "format": "bytes",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 0,
+        "y": 3
+      },
+      "id": 54,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "sqlserver_instance_resource_governance",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT last(\"total_storage_mb\") FROM \"sqlserver_server_properties\" WHERE (\"sql_instance\" =~ /^$InstanceName$/) AND $timeFilter",
@@ -701,12 +909,6 @@
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
             }
           ]
         }
@@ -745,10 +947,10 @@
       "gridPos": {
         "h": 2,
         "w": 2,
-        "x": 3,
+        "x": 2,
         "y": 3
       },
-      "id": 74,
+      "id": 58,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -786,8 +988,15 @@
       "tableColumn": "",
       "targets": [
         {
-          "groupBy": [],
-          "measurement": "sqlserver_db_resource_governance",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            }
+          ],
+          "measurement": "sqlserver_instance_resource_governance",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT last(\"total_storage_mb\") FROM \"sqlserver_server_properties\" WHERE (\"sql_instance\" =~ /^$InstanceName$/) AND $timeFilter",
@@ -798,7 +1007,7 @@
             [
               {
                 "params": [
-                  "primary_group_max_workers"
+                  "instance_max_worker_threads"
                 ],
                 "type": "field"
               },
@@ -813,17 +1022,12 @@
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
             }
           ]
         }
       ],
       "thresholds": "",
+      "timeFrom": null,
       "title": "Max workers",
       "type": "singlestat",
       "valueFontSize": "50%",
@@ -857,10 +1061,10 @@
       "gridPos": {
         "h": 2,
         "w": 2,
-        "x": 5,
+        "x": 4,
         "y": 3
       },
-      "id": 73,
+      "id": 56,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -899,7 +1103,7 @@
       "targets": [
         {
           "groupBy": [],
-          "measurement": "sqlserver_db_resource_governance",
+          "measurement": "sqlserver_instance_resource_governance",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT last(\"total_storage_mb\") FROM \"sqlserver_server_properties\" WHERE (\"sql_instance\" =~ /^$InstanceName$/) AND $timeFilter",
@@ -910,7 +1114,7 @@
             [
               {
                 "params": [
-                  "pool_max_io"
+                  "vol_ext_xtore_iops"
                 ],
                 "type": "field"
               },
@@ -925,18 +1129,12 @@
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
             }
           ]
         }
       ],
       "thresholds": "",
-      "title": "Pool Max IOPS",
+      "title": "Xstore IOPS",
       "type": "singlestat",
       "valueFontSize": "50%",
       "valueMaps": [
@@ -949,16 +1147,16 @@
       "valueName": "current"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 5
       },
-      "id": 34,
+      "id": 32,
       "panels": [],
-      "title": "Azure SQL DB Activity",
+      "title": "SQL Activity",
       "type": "row"
     },
     {
@@ -969,353 +1167,12 @@
       "datasource": "InfluxDB",
       "fill": 1,
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
         "y": 6
       },
       "id": 4,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": false,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "avg_cpu",
-          "groupBy": [],
-          "measurement": "sqlserver_azurestats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT non_negative_derivative(\"value\", 1s) FROM \"sqlserver_performance\" WHERE (\"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/ AND \"object\" =~ /SQL Statistics/) AND $timeFilter GROUP BY \"counter\"",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "avg_cpu_percent"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        },
-        {
-          "alias": "avg_data_io_percent",
-          "groupBy": [],
-          "measurement": "sqlserver_azurestats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "avg_data_io_percent"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        },
-        {
-          "alias": "log_write_percent",
-          "groupBy": [],
-          "measurement": "sqlserver_azurestats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "avg_log_write_percent"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        },
-        {
-          "alias": "avg_memory_percent",
-          "groupBy": [],
-          "measurement": "sqlserver_azurestats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "D",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "avg_memory_usage_percent"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        },
-        {
-          "alias": "max_worker_percent",
-          "groupBy": [],
-          "measurement": "sqlserver_azurestats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "max_worker_percent"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        },
-        {
-          "alias": "max_session_percent",
-          "groupBy": [],
-          "measurement": "sqlserver_azurestats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "F",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "max_session_percent"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        },
-        {
-          "alias": "avg_instance_cpu_percent",
-          "groupBy": [],
-          "measurement": "sqlserver_azurestats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "G",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "avg_instance_cpu_percent"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        },
-        {
-          "alias": "avg_instance_memory_percent",
-          "groupBy": [],
-          "measurement": "sqlserver_azurestats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "H",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "avg_instance_memory_percent"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "SQL DB Resource Stats",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "InfluxDB",
-      "fill": 1,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 6
-      },
-      "id": 53,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -1356,7 +1213,7 @@
           "measurement": "sqlserver_performance",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(\"value\", 1s) FROM \"sqlserver_performance\" WHERE (\"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/ AND \"object\" =~ /SQL Statistics/) AND $timeFilter GROUP BY \"counter\"",
+          "query": "SELECT non_negative_derivative(\"value\", 1s) FROM \"sqlserver_performance\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"object\" =~ /SQL Statistics/) AND $timeFilter GROUP BY \"counter\"",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1440,141 +1297,10 @@
       "datasource": "InfluxDB",
       "fill": 1,
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 14
-      },
-      "id": 22,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_counter",
-          "groupBy": [
-            {
-              "params": [
-                "counter"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_performance",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT non_negative_derivative(\"value\", 1s) FROM \"sqlserver_performance\" WHERE (\"sql_instance\" =~ /^$InstanceName$/   AND \"database_name\" =~ /^$DatabaseName$/ AND \"object\" =~ /General Statistics/) AND $timeFilter GROUP BY \"counter\"",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  "1s"
-                ],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "object",
-              "operator": "=",
-              "value": "MSSQL$C8648930B0D8:General Statistics"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "SQL Statistics",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "InfluxDB",
-      "fill": 1,
-      "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 6
       },
       "id": 6,
       "legend": {
@@ -1646,12 +1372,6 @@
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
             }
           ]
         }
@@ -1703,423 +1423,11 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 15
       },
-      "id": 28,
+      "id": 30,
       "panels": [],
-      "title": "Database Level Waits and Queues",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "InfluxDB",
-      "fill": 1,
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 23
-      },
-      "id": 2,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sideWidth": null,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "connected",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_wait_type",
-          "groupBy": [
-            {
-              "params": [
-                "wait_type"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_azuredb_waitstats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT non_negative_derivative(\"wait_time_ms\", 1s) FROM \"sqlserver_waitstats\" WHERE (\"sql_instance\" =~ /^$InstanceType.*$/) AND $timeFilter GROUP BY \"wait_type\"",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "wait_time_ms"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  "1s"
-                ],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name'",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "SQL DB Wait Types",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "ms",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "InfluxDB",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 31
-      },
-      "id": 62,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sideWidth": null,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "connected",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_wait_type",
-          "groupBy": [
-            {
-              "params": [
-                "wait_type"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_azuredb_waitstats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT non_negative_derivative(\"wait_time_ms\", 1s) FROM \"sqlserver_waitstats\" WHERE (\"sql_instance\" =~ /^$InstanceType.*$/) AND $timeFilter GROUP BY \"wait_type\"",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "signal_wait_time_ms"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  "1s"
-                ],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name'",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "SQL DB Signal Wait Time",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "ms",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "InfluxDB",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 31
-      },
-      "id": 63,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sideWidth": null,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "connected",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_wait_type",
-          "groupBy": [
-            {
-              "params": [
-                "wait_type"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_azuredb_waitstats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT non_negative_derivative(\"wait_time_ms\", 1s) FROM \"sqlserver_waitstats\" WHERE (\"sql_instance\" =~ /^$InstanceType.*$/) AND $timeFilter GROUP BY \"wait_type\"",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "waiting_tasks_count"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  "1s"
-                ],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name'",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "SQL DB waiting Tasks",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "ms",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 40
-      },
-      "id": 69,
-      "panels": [],
-      "title": "Log Activity",
+      "title": "CPU and Queueing",
       "type": "row"
     },
     {
@@ -2133,286 +1441,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 41
-      },
-      "id": 67,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_instance",
-          "groupBy": [
-            {
-              "params": [
-                "instance"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_performance",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  "1s"
-                ],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "counter",
-              "operator": "=",
-              "value": "Log Bytes Flushed/sec"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Log  Flushed Bytes/sec",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "bytes",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "InfluxDB",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 41
-      },
-      "id": 71,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_instance",
-          "groupBy": [
-            {
-              "params": [
-                "instance"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_performance",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  "1s"
-                ],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "counter",
-              "operator": "=",
-              "value": "Log Flushes/sec"
-            },
-            {
-              "condition": "AND",
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Log Flushes/sec",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 50
-      },
-      "id": 32,
-      "panels": [],
-      "title": "CPU and Workload Groups",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "InfluxDB",
-      "fill": 1,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 51
+        "y": 16
       },
       "id": 48,
       "legend": {
@@ -2457,7 +1486,7 @@
           "measurement": "sqlserver_performance",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT sum(\"value\") FROM \"sqlserver_performance\" WHERE (\"sql_instance\" =~ /^$InstanceName$/   AND \"database_name\" =~ /^$DatabaseName$/ AND \"object\" =~ /Resource Pool Stats/ AND  \"counter\" = 'CPU usage %') AND $timeFilter GROUP BY time($__interval)",
+          "query": "SELECT sum(\"value\") FROM \"sqlserver_performance\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"object\" =~ /Resource Pool Stats/ AND  \"counter\" = 'CPU usage %') AND $timeFilter GROUP BY time($__interval)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2542,7 +1571,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 51
+        "y": 16
       },
       "id": 18,
       "legend": {
@@ -2587,7 +1616,7 @@
           "measurement": "sqlserver_performance",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT \"value\" FROM \"sqlserver_performance\" WHERE (\"counter\" = 'CPU usage %' AND \"object\" =~ /Workload Group Stats/ AND \"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/) AND $timeFilter GROUP BY \"instance\"",
+          "query": "SELECT \"value\" FROM \"sqlserver_performance\" WHERE (\"counter\" = 'CPU usage %' AND \"object\" =~ /Workload Group Stats/ AND \"sql_instance\" =~ /^$InstanceName$/) AND $timeFilter GROUP BY \"instance\"",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2663,11 +1692,11 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 25
       },
-      "id": 30,
+      "id": 28,
       "panels": [],
-      "title": "Schedulers (Optional capture)",
+      "title": "Waits and Queues",
       "type": "row"
     },
     {
@@ -2675,14 +1704,15 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "InfluxDB",
       "fill": 1,
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 24,
         "x": 0,
-        "y": 61
+        "y": 26
       },
-      "id": 58,
+      "id": 2,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -2693,6 +1723,7 @@
         "min": false,
         "rightSide": true,
         "show": true,
+        "sideWidth": null,
         "sort": "avg",
         "sortDesc": true,
         "total": false,
@@ -2701,10 +1732,10 @@
       "lines": true,
       "linewidth": 1,
       "links": [],
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {},
       "percentage": false,
-      "pointradius": 2,
+      "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
@@ -2713,406 +1744,27 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_scheduler_id",
+          "alias": "$tag_wait_type",
           "groupBy": [
             {
               "params": [
-                "scheduler_id"
+                "wait_type"
               ],
               "type": "tag"
             }
           ],
-          "measurement": "sqlserver_schedulers",
+          "measurement": "sqlserver_waitstats",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT non_negative_derivative(\"wait_time_ms\", 1s) FROM \"sqlserver_waitstats\" WHERE (\"sql_instance\" =~ /^$InstanceType.*$/) AND $timeFilter GROUP BY \"wait_type\"",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "total_cpu_usage_ms"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  "10s"
-                ],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Scheduler CPU ms/sec",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "ms",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "fill": 1,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 61
-      },
-      "id": 59,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {},
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_scheduler_id",
-          "groupBy": [
-            {
-              "params": [
-                "scheduler_id"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_schedulers",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "total_scheduler_delay_ms"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  "10s"
-                ],
-                "type": "non_negative_derivative"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Scheduler Delay ms/sec",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "ms",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "fill": 1,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 69
-      },
-      "id": 60,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {},
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_scheduler_id",
-          "groupBy": [
-            {
-              "params": [
-                "scheduler_id"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_schedulers",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "runnable_tasks_count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Runnable Task Count",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "fill": 1,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 69
-      },
-      "id": 61,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {},
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_scheduler_id",
-          "groupBy": [
-            {
-              "params": [
-                "scheduler_id"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_schedulers",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "context_switches_count"
+                  "wait_time_ms"
                 ],
                 "type": "field"
               },
@@ -3126,12 +1778,6 @@
           ],
           "tags": [
             {
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            },
-            {
-              "condition": "AND",
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
@@ -3143,10 +1789,258 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Context switches/sec",
+      "title": "Wait Types",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 34
+      },
+      "id": 10,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_wait_type",
+          "groupBy": [
+            {
+              "params": [
+                "wait_type"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "sqlserver_waitstats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "signal_wait_time_ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Signal Wait Time",
       "tooltip": {
         "shared": true,
         "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 34
+      },
+      "id": 12,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {},
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_wait_type",
+          "groupBy": [
+            {
+              "params": [
+                "wait_type"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "sqlserver_waitstats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "waiting_tasks_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Waiting Tasks",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
@@ -3181,12 +2075,785 @@
       }
     },
     {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
+      "id": 60,
+      "panels": [],
+      "title": "Log Activity",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 44
+      },
+      "id": 62,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_instance",
+          "groupBy": [
+            {
+              "params": [
+                "instance"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "sqlserver_performance",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "counter",
+              "operator": "=",
+              "value": "Log Bytes Flushed/sec"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Log  Flushed Bytes/sec",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 44
+      },
+      "id": 64,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_instance",
+          "groupBy": [
+            {
+              "params": [
+                "instance"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "sqlserver_performance",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "counter",
+              "operator": "=",
+              "value": "Log Flushes/sec"
+            },
+            {
+              "condition": "AND",
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Log Flushes/sec",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 53
+      },
+      "id": 70,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 54
+          },
+          "id": 68,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "avg",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_scheduler_id",
+              "groupBy": [
+                {
+                  "params": [
+                    "scheduler_id"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "sqlserver_schedulers",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "total_scheduler_delay_ms"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "sql_instance",
+                  "operator": "=~",
+                  "value": "/^$InstanceName$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Scheduler Delay ms/sec",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ms",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 54
+          },
+          "id": 72,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "avg",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_scheduler_id",
+              "groupBy": [
+                {
+                  "params": [
+                    "scheduler_id"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "sqlserver_schedulers",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "runnable_tasks_count"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "sql_instance",
+                  "operator": "=~",
+                  "value": "/^$InstanceName$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Runnable Task Count",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 62
+          },
+          "id": 66,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "avg",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_scheduler_id",
+              "groupBy": [
+                {
+                  "params": [
+                    "scheduler_id"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "sqlserver_schedulers",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "total_cpu_usage_ms"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      "10s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "sql_instance",
+                  "operator": "=~",
+                  "value": "/^$InstanceName$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Scheduler CPU ms/sec",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ms",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 62
+          },
+          "id": 74,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "avg",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_scheduler_id",
+              "groupBy": [
+                {
+                  "params": [
+                    "scheduler_id"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "sqlserver_schedulers",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "context_switches_count"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      "1s"
+                    ],
+                    "type": "non_negative_derivative"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "database_name",
+                  "operator": "=~",
+                  "value": "/^$DatabaseName$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "sql_instance",
+                  "operator": "=~",
+                  "value": "/^$InstanceName$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Context switches/sec",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Schedulers ( Optional)",
+      "type": "row"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 54
       },
       "id": 24,
       "panels": [],
@@ -3204,7 +2871,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 78
+        "y": 55
       },
       "id": 16,
       "legend": {
@@ -3247,7 +2914,7 @@
           "measurement": "sqlserver_performance",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT \"value\" FROM \"sqlserver_performance\" WHERE (\"object\" =~ /Memory Manager/ AND \"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/) AND $timeFilter GROUP BY \"counter\"",
+          "query": "SELECT \"value\" FROM \"sqlserver_performance\" WHERE (\"object\" =~ /Memory Manager/ AND \"sql_instance\" =~ /^$InstanceName$/) AND $timeFilter GROUP BY \"counter\"",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3328,7 +2995,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 78
+        "y": 55
       },
       "id": 14,
       "legend": {
@@ -3390,12 +3057,6 @@
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
             }
           ]
         }
@@ -3452,7 +3113,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 87
+        "y": 64
       },
       "id": 20,
       "legend": {
@@ -3518,12 +3179,6 @@
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
             }
           ]
         }
@@ -3580,7 +3235,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 87
+        "y": 64
       },
       "id": 51,
       "legend": {
@@ -3623,7 +3278,7 @@
           "measurement": "sqlserver_performance",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(\"value\", 1s)  FROM \"sqlserver_performance\" WHERE (\"object\"  =~ /Buffer Manager/ AND \"sql_instance\" =~ /^$InstanceName$/   AND \"database_name\" =~ /^$DatabaseName$/ AND \"counter\" =~ /sec/ ) AND $timeFilter GROUP BY \"counter\"",
+          "query": "SELECT non_negative_derivative(\"value\", 1s)  FROM \"sqlserver_performance\" WHERE (\"object\"  =~ /Buffer Manager/ AND \"sql_instance\" =~ /^$InstanceName$/ AND \"counter\" =~ /sec/ ) AND $timeFilter GROUP BY \"counter\"",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3700,19 +3355,6 @@
       }
     },
     {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 96
-      },
-      "id": 76,
-      "panels": [],
-      "title": "Miscellaneous",
-      "type": "row"
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -3723,7 +3365,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 97
+        "y": 73
       },
       "id": 52,
       "legend": {
@@ -3766,7 +3408,7 @@
           "measurement": "sqlserver_performance",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(\"value\", 1s)  FROM \"sqlserver_performance\" WHERE (\"object\"  =~ /Access Methods/ AND \"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/ AND \"counter\" =~ /sec/ ) AND $timeFilter GROUP BY \"counter\"",
+          "query": "SELECT non_negative_derivative(\"value\", 1s)  FROM \"sqlserver_performance\" WHERE (\"object\"  =~ /Access Methods/ AND \"sql_instance\" =~ /^$InstanceName$/ AND \"counter\" =~ /sec/ ) AND $timeFilter GROUP BY \"counter\"",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3841,24 +3483,28 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "InfluxDB",
       "fill": 1,
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 97
+        "y": 73
       },
-      "id": 56,
+      "id": 22,
       "legend": {
         "alignAsTable": true,
-        "avg": false,
+        "avg": true,
         "current": false,
+        "hideZero": true,
         "max": false,
         "min": false,
         "rightSide": true,
         "show": true,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -3866,7 +3512,7 @@
       "nullPointMode": "null",
       "options": {},
       "percentage": false,
-      "pointradius": 2,
+      "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
@@ -3884,11 +3530,10 @@
               "type": "tag"
             }
           ],
-          "hide": false,
           "measurement": "sqlserver_performance",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(\"value\", 1s) FROM \"sqlserver_performance\" WHERE (\"database_name\" =~ /^$DatabaseName$/ AND \"sql_instance\" =~ /^$InstanceName$/ AND \"object\" =~/Latches/ AND \"counter\" =~/sec/) AND $timeFilter GROUP BY \"counter\"",
+          "query": "SELECT non_negative_derivative(\"value\", 1s) FROM \"sqlserver_performance\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"object\" =~ /General Statistics/) AND $timeFilter GROUP BY \"counter\"",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3899,17 +3544,17 @@
                   "value"
                 ],
                 "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
               }
             ]
           ],
           "tags": [
             {
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            },
-            {
-              "condition": "AND",
               "key": "sql_instance",
               "operator": "=~",
               "value": "/^$InstanceName$/"
@@ -3918,13 +3563,7 @@
               "condition": "AND",
               "key": "object",
               "operator": "=",
-              "value": "MSSQL$AEE4C419AFA1:Databases"
-            },
-            {
-              "condition": "AND",
-              "key": "counter",
-              "operator": "=",
-              "value": "Log File(s) Size (KB)"
+              "value": "MSSQL$C8648930B0D8:General Statistics"
             }
           ]
         }
@@ -3933,10 +3572,10 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Latch Waits/sec",
+      "title": "SQL Statistics",
       "tooltip": {
         "shared": true,
-        "sort": 0,
+        "sort": 2,
         "value_type": "individual"
       },
       "type": "graph",
@@ -3949,7 +3588,7 @@
       },
       "yaxes": [
         {
-          "format": "kbytes",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -3971,58 +3610,34 @@
       }
     }
   ],
-  "refresh": false,
+  "refresh": "30s",
   "schemaVersion": 18,
   "style": "dark",
   "tags": [
-    "Azure SQL DB"
+    "SQLMI"
   ],
   "templating": {
     "list": [
       {
         "allValue": null,
         "current": {
-          "text": "sqlscale",
-          "value": "sqlscale"
+          "selected": true,
+          "text": "apurvshsmitest.3e4033cee53a.database.windows.net",
+          "value": "apurvshsmitest.3e4033cee53a.database.windows.net"
         },
         "datasource": "InfluxDB",
-        "definition": " select sql_instance from (select  \"sql_instance\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" where  \"engine_edition\" = 5 and $timeFilter  GROUP BY sql_instance)",
+        "definition": " select sql_instance from (select  \"sql_instance\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" where  \"engine_edition\" = 8 and $timeFilter  GROUP BY sql_instance)",
         "hide": 0,
         "includeAll": false,
-        "label": "Server Name",
+        "label": "InstanceName",
         "multi": false,
         "name": "InstanceName",
         "options": [],
-        "query": " select sql_instance from (select  \"sql_instance\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" where  \"engine_edition\" = 5 and $timeFilter  GROUP BY sql_instance)",
+        "query": " select sql_instance from (select  \"sql_instance\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" where  \"engine_edition\" = 8 and $timeFilter  GROUP BY sql_instance)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 2,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": null,
-        "current": {
-          "text": "hstest",
-          "value": "hstest"
-        },
-        "datasource": "InfluxDB",
-        "definition": "SHOW TAG VALUES  FROM \"sqlserver_server_properties\" WITH KEY=\"database_name\"  WHERE $timeFilter  AND sql_instance =~  /$InstanceName/",
-        "hide": 0,
-        "includeAll": false,
-        "label": "DatabaseName",
-        "multi": false,
-        "name": "DatabaseName",
-        "options": [],
-        "query": "SHOW TAG VALUES  FROM \"sqlserver_server_properties\" WITH KEY=\"database_name\"  WHERE $timeFilter  AND sql_instance =~  /$InstanceName/",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 2,
+        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",
@@ -4055,7 +3670,7 @@
     ]
   },
   "timezone": "",
-  "title": "SQL DB Performance",
-  "uid": "imTg-Vvik",
-  "version": 13
+  "title": "SQL Managed Instance Performance",
+  "uid": "sqlmiperf",
+  "version": 18
 }
