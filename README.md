@@ -128,3 +128,11 @@ In Grafana, create the data source for InfluxDB, and import respective dashboard
 - Download Grafana dashboard JSON definitions from the repo [SQLDB dashboards](https://github.com/denzilribeiro/sqldbmonitoring/tree/master/dashboards/azuresqldb) folder or [SQL Managed Instance Dashboards](https://github.com/denzilribeiro/sqldbmonitoring/tree/master/dashboards/azuresqlmi) for all the dashboards, and then [import](http://docs.grafana.org/reference/export_import/#importing-a-dashboard) them into Grafana. When importing each dashboard, make sure to use the dropdown labeled _InfluxDB-01_ to select the data source created in the previous step.
 
 
+## Dashboard samples
+
+a.  AzureSQLDBEstate.json :  This is for Azure SQL Databases and not managed instances. This you a row per logical SQL Server and a top level view of all the servers and databases which  you can then drill through to an individual database.
+
+b. AzureSQLDBPerformance.json: This is a database level view of performance from high level metrics, to waitstats to performance counters and will be the primary performance dashboard
+
+c. AzureSQLDBStorage.json:  This dashboard is primarily based on virtual file stats DMV and gives you a view of storage latency for the respective databases.
+
