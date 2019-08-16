@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 1,
-  "iteration": 1564251626333,
+  "iteration": 1565977865741,
   "links": [
     {
       "asDropdown": true,
@@ -345,7 +345,7 @@
           "measurement": "sqlserver_server_properties",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SHOW  TAG VALUES FROM sqlserver_server_properties WITH KEY = \"sku\" WHERE \"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/  AND $timeFilter",
+          "query": "select sku from (select  \"sku\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" WHERE \"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/  AND $timeFilter  GROUP BY sql_instance, database_name)\n",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -466,7 +466,7 @@
           "measurement": "sqlserver_server_properties",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SHOW  TAG VALUES from sqlserver_server_properties WITH KEY = \"hardware_type\" WHERE \"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/  AND $timeFilter",
+          "query": "select \"hardware_type\" from (select  \"hardware_type\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" WHERE \"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/  AND $timeFilter  GROUP BY sql_instance, database_name)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -686,7 +686,7 @@
             [
               {
                 "params": [
-                  "instance_max_log_rate"
+                  "primary_max_log_rate"
                 ],
                 "type": "field"
               },
@@ -910,7 +910,7 @@
             [
               {
                 "params": [
-                  "pool_max_io"
+                  "primary_group_max_io"
                 ],
                 "type": "field"
               },
@@ -2088,7 +2088,7 @@
       },
       "yaxes": [
         {
-          "format": "ms",
+          "format": "none",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -3950,7 +3950,7 @@
       },
       "yaxes": [
         {
-          "format": "kbytes",
+          "format": "none",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -3972,7 +3972,7 @@
       }
     }
   ],
-  "refresh": false,
+  "refresh": "30s",
   "schemaVersion": 18,
   "style": "dark",
   "tags": [
@@ -4058,5 +4058,5 @@
   "timezone": "",
   "title": "SQL DB Performance",
   "uid": "sqldbperf",
-  "version": 16
+  "version": 23
 }

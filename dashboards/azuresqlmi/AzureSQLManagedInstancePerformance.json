@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 4,
-  "iteration": 1564251982146,
+  "iteration": 1565977929951,
   "links": [
     {
       "asDropdown": true,
@@ -3621,9 +3621,8 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "apurvshsmitest.3e4033cee53a.database.windows.net",
-          "value": "apurvshsmitest.3e4033cee53a.database.windows.net"
+          "text": "sqlperfmi.3a7f4f11ae66.database.windows.net",
+          "value": "sqlperfmi.3a7f4f11ae66.database.windows.net"
         },
         "datasource": "InfluxDB",
         "definition": " select sql_instance from (select  \"sql_instance\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" where  \"engine_edition\" = 8 and $timeFilter  GROUP BY sql_instance)",
