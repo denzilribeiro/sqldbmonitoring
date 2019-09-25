@@ -1,4 +1,12 @@
 #!/bin/bash
+telegrafbuild=$1
+
+if [[ $telegrafbuild -eq "nightly" ]]; then
+ releasebuild=0
+else
+ releasebuild=1
+fi
+
 
 echo "**********Starting Setup **********"
 dpkg-query -l docker.io
@@ -13,14 +21,28 @@ fi
 
 echo "************Installing Telegraf Nightly***********"
 cd $HOME
-wget https://dl.influxdata.com/telegraf/nightlies/telegraf_nightly_amd64.deb
+
+sudo apt search telegraf | grep telegraf
+if [ $? -ne 0 ]
+then
+	sudo wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+	sudo source /etc/lsb-release
+	sudo echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+fi
+
 dpkg-query -l telegraf
-
-
 if [ $? -ne 0 ]
 then
   echo "***********Installing telegraf***************"
-  sudo dpkg -i telegraf_nightly_amd64.deb
+  if [ releasebuild -eq 1]
+  then
+	echo "*** Telegraf Release Build being installed"
+	sudo apt-get update && sudo apt-get install telegraf
+  else  
+	echo "*** Telegraf Nightly build being installed"
+	wget https://dl.influxdata.com/telegraf/nightlies/telegraf_nightly_amd64.deb
+	sudo dpkg -i telegraf_nightly_amd64.deb
+  fi
 else
   echo "Telegraf already installed"
 fi
