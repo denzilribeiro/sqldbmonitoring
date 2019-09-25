@@ -23,11 +23,17 @@ git clone https://github.com/denzilribeiro/sqldbmonitoring.git
 ```
 
 ## Setup
-Setup will install docker.io, will install the telegraf nightly build and configure the firewall to open up port 3000 required for Grafana and pull and start the Grafana container.
+Setup will install docker.io, will install the telegraf latest release build and configure the firewall to open up port 3000 required for Grafana and pull and start the Grafana container.
 ```
 cd $HOME/sqldbmonitoring
 ./monitoringsetup.sh
 ```
+If you want to install the latest nightly build with most recent telegraf changes
+```
+cd $HOME/sqldbmonitoring nightly
+./monitoringsetup.sh
+```
+
 
 ## Install, Configure and start InfluxDB
 Assuming you have mounted a separate data drive as specified in the Setup VM portion , edit the runinfluxdb.sh file and modify the INFLUXDB_HOST_DIRECTORY variable to point to the directory where you want the InfluxDB volume to be mounted, if it is something other than the default of /data/influxdb.
