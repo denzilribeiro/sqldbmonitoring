@@ -1,11 +1,18 @@
 #!/bin/bash
+
+# Pass argument "nightly" to use nightly build instead of release build.
 telegrafbuild=$1
 
-if [[ $telegrafbuild -eq "nightly" ]]; then
- releasebuild=0
+if [[ -z $telegrafbuild ]]; then
+releasebuild=1;
 else
- releasebuild=1
+        if [[ $telegrafbuild -eq "nightly" ]]; then
+                 releasebuild=0
+        else
+                 releasebuild=1
+        fi
 fi
+echo $releasebuild
 
 
 echo "**********Starting Setup **********"
@@ -19,10 +26,10 @@ else
   echo "Docker already installed"	
 fi
 
-echo "************Installing Telegraf Nightly***********"
+echo "************Installing Telegraf***********"
 cd $HOME
 
-sudo apt search telegraf | grep telegraf
+sudo apt search telegraf | grep telegraf > /dev/null 2>&1
 if [ $? -ne 0 ]
 then
 	sudo wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
@@ -34,7 +41,7 @@ dpkg-query -l telegraf
 if [ $? -ne 0 ]
 then
   echo "***********Installing telegraf***************"
-  if [ releasebuild -eq 1]
+  if [[ $releasebuild == 1 ]]
   then
 	echo "*** Telegraf Release Build being installed"
 	sudo apt-get update && sudo apt-get install telegraf
