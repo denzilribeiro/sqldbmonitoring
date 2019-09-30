@@ -790,7 +790,7 @@
             [
               {
                 "params": [
-                  "primary_group_max_worker_threads"
+                  "primary_group_max_workers"
                 ],
                 "type": "field"
               },
