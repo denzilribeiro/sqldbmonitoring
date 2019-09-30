@@ -678,7 +678,7 @@
             [
               {
                 "params": [
-                  "instance_max_log_rate"
+                  "primary_max_log_rate"
                 ],
                 "type": "field"
               },
@@ -790,7 +790,7 @@
             [
               {
                 "params": [
-                  "instance_max_worker_threads"
+                  "primary_group_max_worker_threads"
                 ],
                 "type": "field"
               },
