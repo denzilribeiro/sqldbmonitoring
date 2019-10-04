@@ -33,11 +33,11 @@ sudo apt search telegraf | grep telegraf > /dev/null 2>&1
 if [ $? -ne 0 ]
 then
 	sudo wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
-	sudo source /etc/lsb-release
+	source /etc/lsb-release
 	sudo echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
 fi
 
-dpkg-query -l telegraf
+sudo dpkg-query -l telegraf
 if [ $? -ne 0 ]
 then
   echo "***********Installing telegraf***************"
