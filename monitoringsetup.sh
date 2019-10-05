@@ -29,13 +29,14 @@ fi
 echo "************Installing Telegraf***********"
 cd $HOME
 
-sudo apt search telegraf | grep telegraf > /dev/null 2>&1
-if [ $? -ne 0 ]
-then
-	sudo wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
-	source /etc/lsb-release
-	sudo echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
-fi
+#Add influx repo
+rm -rf /etc/apt/sources.list.d/influxdb.list
+sudo wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+source /etc/lsb-release
+echo "Adding telegraf repo"
+sudo echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable"
+sudo echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+
 
 #sudo dpkg-query -l telegraf
 #dpkg-query -l telegraf
@@ -62,7 +63,7 @@ echo "********* Firewall rule for Grafana port **********"
 sudo ufw allow 3000/tcp
 sudo ufw reload
 
-echo "****** copying telegraf.conf sample for SQL, original conf renamed to /etc/telegraf_original.conf  ****/"
+echo "****** copying telegraf.conf sample for SQL, original conf renamed to /etc/telegraf/telegraf_original.conf  ****/"
 sudo mv /etc/telegraf/telegraf.conf /etc/telegraf/telegraf_original.conf 
 sudo cp $HOME/sqldbmonitoring/telegraf/telegraf.conf /etc/telegraf/telegraf.conf 
 sudo chown root:root /etc/telegraf/telegraf.conf 
