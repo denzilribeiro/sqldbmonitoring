@@ -16,9 +16,10 @@ echo $releasebuild
 
 
 echo "**********Starting Setup **********"
-dpkg-query -l docker.io
-
-if [ $? -ne 0 ]
+#dpkg-query -l docker.io
+PKG_DOCKER=$(dpkg-query -W --showformat='${Status}\n' docker.io|grep "install ok installed")
+echo Package Docker: $PKG_DOCKER
+if [ "" == "$PKG_DOCKER" ];
 then
   echo "***********Installing Docker***************"
   sudo apt-get install docker.io -y
@@ -28,7 +29,6 @@ fi
 
 echo "************Installing Telegraf***********"
 cd $HOME
-
 #Add influx repo
 rm -rf /etc/apt/sources.list.d/influxdb.list
 sudo wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
@@ -40,9 +40,9 @@ sudo echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} 
 
 #sudo dpkg-query -l telegraf
 #dpkg-query -l telegraf
-PKG_OK=$(dpkg-query -W --showformat='${Status}\n' the.package.name|grep "install ok installed")
-echo Package telegraf: $PKG_OK
-if [ "" == "$PKG_OK" ];
+PKG_TELEGRAF=$(dpkg-query -W --showformat='${Status}\n' telegraf|grep "install ok installed")
+echo Package telegraf: $PKG_TELEGRAF
+if [ "" == "$PKG_TELEGRAF" ];
 then
   echo "***********Installing telegraf***************"
   if [[ $releasebuild == 1 ]]
@@ -69,7 +69,7 @@ sudo cp $HOME/sqldbmonitoring/telegraf/telegraf.conf /etc/telegraf/telegraf.conf
 sudo chown root:root /etc/telegraf/telegraf.conf 
 sudo chmod 644 /etc/telegraf/telegraf.conf
 
-echo "********Pulling grafana containger ****************"
+echo "********Pulling grafana container ****************"
 cd $HOME/sqldbmonitoring/grafana
 sudo ./rungrafana.sh
 

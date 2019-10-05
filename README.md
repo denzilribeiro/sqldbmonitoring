@@ -38,8 +38,8 @@ cd $HOME/sqldbmonitoring nightly
 ## Install, Configure and start InfluxDB
 Assuming you have mounted a separate data drive as specified in the Setup VM portion , edit the runinfluxdb.sh file and modify the INFLUXDB_HOST_DIRECTORY variable to point to the directory where you want the InfluxDB volume to be mounted, if it is something other than the default of /data/influxdb.
 ```
-cd $HOME/sqlmimonitoring/influxdb`  
-sudo vi runinfluxdb.sh`
+cd $HOME/sqlmimonitoring/influxdb  
+sudo vi runinfluxdb.sh
 ```
 Pull the docker image and start InfluxDB
 ```

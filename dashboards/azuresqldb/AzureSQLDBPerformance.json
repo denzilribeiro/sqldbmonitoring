@@ -936,7 +936,7 @@
         }
       ],
       "thresholds": "",
-      "title": "Pool Max IOPS",
+      "title": "Max IOPS",
       "type": "singlestat",
       "valueFontSize": "50%",
       "valueMaps": [
