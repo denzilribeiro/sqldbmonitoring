@@ -37,8 +37,11 @@ then
 	sudo echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
 fi
 
-sudo dpkg-query -l telegraf
-if [ $? -ne 0 ]
+#sudo dpkg-query -l telegraf
+#dpkg-query -l telegraf
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' the.package.name|grep "install ok installed")
+echo Package telegraf: $PKG_OK
+if [ "" == "$PKG_OK" ];
 then
   echo "***********Installing telegraf***************"
   if [[ $releasebuild == 1 ]]
