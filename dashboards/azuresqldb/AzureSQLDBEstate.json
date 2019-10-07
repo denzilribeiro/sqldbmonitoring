@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 6,
-  "iteration": 1565977964653,
+  "iteration": 1570462546550,
   "links": [
     {
       "asDropdown": true,
@@ -47,8 +47,8 @@
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "sqlscale",
-          "value": "sqlscale"
+          "text": "vs-hs",
+          "value": "vs-hs"
         }
       },
       "title": "$InstanceName",
@@ -98,8 +98,8 @@
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "sqlscale",
-          "value": "sqlscale"
+          "text": "vs-hs",
+          "value": "vs-hs"
         }
       },
       "seriesOverrides": [],
@@ -218,8 +218,8 @@
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "sqlscale",
-          "value": "sqlscale"
+          "text": "vs-hs",
+          "value": "vs-hs"
         }
       },
       "seriesOverrides": [],
@@ -338,8 +338,8 @@
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "sqlscale",
-          "value": "sqlscale"
+          "text": "vs-hs",
+          "value": "vs-hs"
         }
       },
       "seriesOverrides": [],
@@ -438,8 +438,8 @@
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "sqlscale",
-          "value": "sqlscale"
+          "text": "vs-hs",
+          "value": "vs-hs"
         }
       },
       "scroll": true,
@@ -570,13 +570,13 @@
       "id": 17,
       "panels": [],
       "repeat": null,
-      "repeatIteration": 1565977964653,
+      "repeatIteration": 1570462546550,
       "repeatPanelId": 6,
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "denzilrdb",
-          "value": "denzilrdb"
+          "text": "sqlscale",
+          "value": "sqlscale"
         }
       },
       "title": "$InstanceName",
@@ -623,14 +623,14 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1565977964653,
+      "repeatIteration": 1570462546550,
       "repeatPanelId": 2,
       "repeatedByRow": true,
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "denzilrdb",
-          "value": "denzilrdb"
+          "text": "sqlscale",
+          "value": "sqlscale"
         }
       },
       "seriesOverrides": [],
@@ -746,14 +746,14 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1565977964653,
+      "repeatIteration": 1570462546550,
       "repeatPanelId": 4,
       "repeatedByRow": true,
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "denzilrdb",
-          "value": "denzilrdb"
+          "text": "sqlscale",
+          "value": "sqlscale"
         }
       },
       "seriesOverrides": [],
@@ -869,14 +869,14 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1565977964653,
+      "repeatIteration": 1570462546550,
       "repeatPanelId": 3,
       "repeatedByRow": true,
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "denzilrdb",
-          "value": "denzilrdb"
+          "text": "sqlscale",
+          "value": "sqlscale"
         }
       },
       "seriesOverrides": [],
@@ -972,14 +972,14 @@
       "links": [],
       "options": {},
       "pageSize": null,
-      "repeatIteration": 1565977964653,
+      "repeatIteration": 1570462546550,
       "repeatPanelId": 16,
       "repeatedByRow": true,
       "scopedVars": {
         "InstanceName": {
           "selected": false,
-          "text": "denzilrdb",
-          "value": "denzilrdb"
+          "text": "sqlscale",
+          "value": "sqlscale"
         }
       },
       "scroll": true,
@@ -1138,7 +1138,7 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -1163,5 +1163,5 @@
   "timezone": "",
   "title": "Azure SQL DB Estate",
   "uid": "sqldboverview",
-  "version": 17
+  "version": 18
 }

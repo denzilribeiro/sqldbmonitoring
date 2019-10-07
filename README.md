@@ -66,7 +66,7 @@ GO
 ## Edit the telegraf configuration file
 Modify the /etc/telegraf.conf with the options specified [here](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/sqlserver)
 
-Edit the /etc/telegraf.conf one string per connection string.
+Edit the /etc/telegraf/telegraf.conf one string per connection string.
 
 **Note:** For **Azure SQL Database**, you would need one connection string per database you are monitoring specifying the right database name and not master. An example snippet is below
 ```
