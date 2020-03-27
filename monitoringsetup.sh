@@ -30,7 +30,7 @@ fi
 echo "************Installing Telegraf***********"
 cd $HOME
 #Add influx repo
-rm -rf /etc/apt/sources.list.d/influxdb.list
+sudo rm -rf /etc/apt/sources.list.d/influxdb.list
 sudo wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 source /etc/lsb-release
 echo "Adding telegraf repo"
