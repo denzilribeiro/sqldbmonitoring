@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 1,
-  "iteration": 1565977865741,
+  "id": 2,
+  "iteration": 1585085498350,
   "links": [
     {
       "asDropdown": true,
@@ -1005,7 +1005,7 @@
         {
           "alias": "avg_cpu",
           "groupBy": [],
-          "measurement": "sqlserver_azurestats",
+          "measurement": "sqlserver_azure_db_resource_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "query": "SELECT non_negative_derivative(\"value\", 1s) FROM \"sqlserver_performance\" WHERE (\"sql_instance\" =~ /^$InstanceName$/  AND \"database_name\" =~ /^$DatabaseName$/ AND \"object\" =~ /SQL Statistics/) AND $timeFilter GROUP BY \"counter\"",
@@ -1039,7 +1039,7 @@
         {
           "alias": "avg_data_io_percent",
           "groupBy": [],
-          "measurement": "sqlserver_azurestats",
+          "measurement": "sqlserver_azure_db_resource_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "B",
@@ -1071,7 +1071,7 @@
         {
           "alias": "log_write_percent",
           "groupBy": [],
-          "measurement": "sqlserver_azurestats",
+          "measurement": "sqlserver_azure_db_resource_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "C",
@@ -1103,7 +1103,7 @@
         {
           "alias": "avg_memory_percent",
           "groupBy": [],
-          "measurement": "sqlserver_azurestats",
+          "measurement": "sqlserver_azure_db_resource_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "D",
@@ -1135,7 +1135,7 @@
         {
           "alias": "max_worker_percent",
           "groupBy": [],
-          "measurement": "sqlserver_azurestats",
+          "measurement": "sqlserver_azure_db_resource_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "E",
@@ -1199,7 +1199,7 @@
         {
           "alias": "avg_instance_cpu_percent",
           "groupBy": [],
-          "measurement": "sqlserver_azurestats",
+          "measurement": "sqlserver_azure_db_resource_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "G",
@@ -1231,7 +1231,7 @@
         {
           "alias": "avg_instance_memory_percent",
           "groupBy": [],
-          "measurement": "sqlserver_azurestats",
+          "measurement": "sqlserver_azure_db_resource_stats",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "H",
@@ -1718,8 +1718,8 @@
       "datasource": "InfluxDB",
       "fill": 1,
       "gridPos": {
-        "h": 8,
-        "w": 24,
+        "h": 9,
+        "w": 12,
         "x": 0,
         "y": 23
       },
@@ -1806,7 +1806,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "SQL DB Wait Types",
+      "title": "Cumulative Wait Time ms",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -1853,8 +1853,141 @@
       "gridPos": {
         "h": 9,
         "w": 12,
+        "x": 12,
+        "y": 23
+      },
+      "id": 77,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": null,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {},
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_wait_type",
+          "groupBy": [
+            {
+              "params": [
+                "wait_type"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "sqlserver_azuredb_waitstats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT   non_negative_derivative(\"wait_time_ms\", 1s) / non_negative_derivative(\"waiting_tasks_count\", 1s)   FROM \"sqlserver_azuredb_waitstats\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name'\" =~ /^$DatabaseName$/) AND $timeFilter GROUP BY \"wait_type\"\n",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "waiting_tasks_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "database_name'",
+              "operator": "=~",
+              "value": "/^$DatabaseName$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Average Wait Time ms",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
         "x": 0,
-        "y": 31
+        "y": 32
       },
       "id": 62,
       "legend": {
@@ -1987,7 +2120,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 31
+        "y": 32
       },
       "id": 63,
       "legend": {
@@ -2115,7 +2248,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 41
       },
       "id": 69,
       "panels": [],
@@ -2133,7 +2266,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 42
       },
       "id": 67,
       "legend": {
@@ -2265,7 +2398,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 41
+        "y": 42
       },
       "id": 71,
       "legend": {
@@ -2308,6 +2441,8 @@
           "measurement": "sqlserver_performance",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT non_negative_derivative(\"value\", 1s)  FROM \"sqlserver_performance\" WHERE (\"counter\" = 'Log Flushes/sec' AND \"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/) AND $timeFilter GROUP BY \"instance\"\n",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -2394,7 +2529,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 50
+        "y": 51
       },
       "id": 32,
       "panels": [],
@@ -2412,7 +2547,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 51
+        "y": 52
       },
       "id": 48,
       "legend": {
@@ -2542,7 +2677,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 51
+        "y": 52
       },
       "id": 18,
       "legend": {
@@ -2663,7 +2798,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 61
       },
       "id": 30,
       "panels": [
@@ -3187,7 +3322,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 61
+        "y": 62
       },
       "id": 24,
       "panels": [],
@@ -3205,7 +3340,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 62
+        "y": 63
       },
       "id": 16,
       "legend": {
@@ -3329,7 +3464,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 62
+        "y": 63
       },
       "id": 14,
       "legend": {
@@ -3453,7 +3588,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 71
+        "y": 72
       },
       "id": 20,
       "legend": {
@@ -3581,7 +3716,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 71
+        "y": 72
       },
       "id": 51,
       "legend": {
@@ -3706,7 +3841,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 80
+        "y": 81
       },
       "id": 76,
       "panels": [],
@@ -3724,7 +3859,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 81
+        "y": 82
       },
       "id": 52,
       "legend": {
@@ -3847,7 +3982,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 81
+        "y": 82
       },
       "id": 56,
       "legend": {
@@ -3972,7 +4107,7 @@
       }
     }
   ],
-  "refresh": "30s",
+  "refresh": false,
   "schemaVersion": 18,
   "style": "dark",
   "tags": [
@@ -4008,8 +4143,8 @@
       {
         "allValue": null,
         "current": {
-          "text": "hsvldb",
-          "value": "hsvldb"
+          "text": "hscdb4TB",
+          "value": "hscdb4TB"
         },
         "datasource": "InfluxDB",
         "definition": "SHOW TAG VALUES  FROM \"sqlserver_server_properties\" WITH KEY=\"database_name\"  WHERE $timeFilter  AND sql_instance =~  /$InstanceName/",
@@ -4058,5 +4193,5 @@
   "timezone": "",
   "title": "SQL DB Performance",
   "uid": "sqldbperf",
-  "version": 23
+  "version": 5
 }

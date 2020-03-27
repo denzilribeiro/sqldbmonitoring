@@ -14,9 +14,9 @@
   },
   "editable": true,
   "gnetId": null,
-  "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1565611911353,
+  "graphTooltip": 1,
+  "id": 4,
+  "iteration": 1585059161314,
   "links": [
     {
       "asDropdown": true,
@@ -902,7 +902,7 @@
             [
               {
                 "params": [
-                  "pool_max_io"
+                  "primary_group_max_io"
                 ],
                 "type": "field"
               },
@@ -928,7 +928,7 @@
         }
       ],
       "thresholds": "",
-      "title": "Max IOPS",
+      "title": "Pool Max IO",
       "type": "singlestat",
       "valueFontSize": "50%",
       "valueMaps": [
@@ -1015,7 +1015,7 @@
           "measurement": "sqlserver_database_io",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(\"read_latency_ms\", 1s) / non_negative_derivative(\"reads\", 1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/) AND $timeFilter GROUP BY \"database_name\", \"logical_filename\"",
+          "query": "SELECT non_negative_derivative(\"read_latency_ms\", 1s)/  non_negative_derivative(\"reads\", 1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND   \"database_name\" =~ /^$DatabaseName$/  ) AND $timeFilter GROUP BY \"database_name\", \"logical_filename\"",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1153,7 +1153,7 @@
           "measurement": "sqlserver_database_io",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(\"write_latency_ms\", 1s) / non_negative_derivative(\"writes\", 1s) FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/) AND $timeFilter GROUP BY \"database_name\", \"logical_filename\"",
+          "query": "SELECT non_negative_derivative(\"write_latency_ms\", 1s) / non_negative_derivative(\"writes\", 1s) FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND (\"database_name\" =~ /^$DatabaseName$/ )) AND $timeFilter GROUP BY \"database_name\",database_id::string, \"logical_filename\"",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1242,6 +1242,282 @@
         "x": 0,
         "y": 15
       },
+      "id": 52,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_database_name | $tag_logical_filename",
+          "groupBy": [
+            {
+              "params": [
+                "database_name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "logical_filename"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "sqlserver_database_io",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT non_negative_derivative(\"rg_read_stall_ms\", 1s)/ non_negative_derivative(\"reads\", 1s) FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ ) AND $timeFilter GROUP BY \"database_name\", \"logical_filename\"",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "rg_read_stall_ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "database_name",
+              "operator": "=~",
+              "value": "/^$DatabaseName$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Reads IO's queued -  Resource Governance Impact",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "id": 53,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_database_name | $tag_logical_filename",
+          "groupBy": [
+            {
+              "params": [
+                "database_name"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "logical_filename"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "sqlserver_database_io",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT non_negative_derivative(\"rg_write_stall_ms\", 1s)/ non_negative_derivative(\"reads\", 1s) FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND  \"database_name\" =~ /^$DatabaseName$/ ) AND $timeFilter GROUP BY \"database_name\", \"logical_filename\"",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "rg_write_stall_ms"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "database_name",
+              "operator": "=~",
+              "value": "/^$DatabaseName$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Write IO's queued -  Resource Governance Impact",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
       "id": 12,
       "legend": {
         "alignAsTable": true,
@@ -1291,6 +1567,8 @@
           "measurement": "sqlserver_database_io",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT non_negative_derivative(\"read_bytes\", 1s) FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ ) AND $timeFilter GROUP BY \"database_name\", \"logical_filename\"",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1320,6 +1598,12 @@
               "key": "database_name",
               "operator": "=~",
               "value": "/^$DatabaseName$/"
+            },
+            {
+              "condition": "OR",
+              "key": "database_name",
+              "operator": "=",
+              "value": "select tag value"
             }
           ]
         }
@@ -1376,7 +1660,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 15
+        "y": 24
       },
       "id": 14,
       "legend": {
@@ -1427,6 +1711,8 @@
           "measurement": "sqlserver_database_io",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT non_negative_derivative(\"write_bytes\", 1s) FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/  ) AND $timeFilter GROUP BY \"database_name\", \"logical_filename\"",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1512,7 +1798,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 33
       },
       "id": 16,
       "legend": {
@@ -1561,6 +1847,8 @@
           "measurement": "sqlserver_database_io",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT non_negative_derivative(\"reads\", 1s) FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND (\"database_name\" =~ /^$DatabaseName$/ OR \"database_name\" ='tempdb' ) ) AND $timeFilter GROUP BY \"database_name\", \"logical_filename\"",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1646,7 +1934,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 33
       },
       "id": 17,
       "legend": {
@@ -1697,6 +1985,8 @@
           "measurement": "sqlserver_database_io",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT non_negative_derivative(\"writes\", 1s) FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND (\"database_name\" =~ /^$DatabaseName$/ OR \"database_name\" ='tempdb' ) ) AND $timeFilter GROUP BY \"database_name\", \"logical_filename\"",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -1772,17 +2062,216 @@
       }
     },
     {
-      "collapsed": true,
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
       "gridPos": {
-        "h": 1,
-        "w": 24,
+        "h": 9,
+        "w": 12,
         "x": 0,
-        "y": 33
+        "y": 42
       },
-      "id": 23,
-      "panels": [],
-      "title": "Database File Size",
-      "type": "row"
+      "id": 46,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_database_name | DataLogFiles",
+          "groupBy": [
+            {
+              "params": [
+                "database_name"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "sqlserver_database_io",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"reads\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND database_id > 2) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "reads"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "database_name",
+              "operator": "=~",
+              "value": "/^$DatabaseName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "logical_filename",
+              "operator": "!=",
+              "value": "RBPEX"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_database_name | RBPEX",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"reads\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND database_id = 0) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "TempDB | DataLogFiles",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"reads\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND  database_id = 2 ) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "RBPEX Vs Data Files Reads ( IOPS)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1792,23 +2281,23 @@
       "datasource": "InfluxDB",
       "fill": 1,
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
-        "x": 0,
-        "y": 34
+        "x": 12,
+        "y": 42
       },
-      "id": 25,
+      "id": 47,
       "legend": {
         "alignAsTable": true,
-        "avg": false,
-        "current": true,
+        "avg": true,
+        "current": false,
         "hideEmpty": true,
         "hideZero": true,
         "max": false,
         "min": false,
         "rightSide": true,
         "show": true,
-        "sort": "current",
+        "sort": "avg",
         "sortDesc": true,
         "total": false,
         "values": true
@@ -1828,27 +2317,35 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_instance",
+          "alias": "$tag_database_name | All files",
           "groupBy": [
             {
               "params": [
-                "instance"
+                "database_name"
               ],
               "type": "tag"
             }
           ],
-          "measurement": "sqlserver_performance",
+          "measurement": "sqlserver_database_io",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"writes\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND database_id > 2) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "value"
+                  "writes"
                 ],
                 "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
               }
             ]
           ],
@@ -1860,27 +2357,103 @@
             },
             {
               "condition": "AND",
-              "key": "counter",
-              "operator": "=",
-              "value": "Data File(s) Size (KB)"
-            },
-            {
-              "condition": "AND",
               "key": "database_name",
               "operator": "=~",
               "value": "/^$DatabaseName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "logical_filename",
+              "operator": "!=",
+              "value": "RBPEX"
             }
           ]
+        },
+        {
+          "alias": "$tag_database_name | RBPEX",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"writes\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND database_id = 0) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Tempdb| AllFiles",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"writes\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND  database_id = 2 ) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Data File Size",
+      "title": "RBPEX V/s Data Files writes",
       "tooltip": {
         "shared": true,
-        "sort": 2,
+        "sort": 0,
         "value_type": "individual"
       },
       "type": "graph",
@@ -1893,8 +2466,7 @@
       },
       "yaxes": [
         {
-          "decimals": 3,
-          "format": "kbytes",
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1923,150 +2495,21 @@
       "datasource": "InfluxDB",
       "fill": 1,
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 34
-      },
-      "id": 27,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "$tag_instance",
-          "groupBy": [
-            {
-              "params": [
-                "instance"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "sqlserver_performance",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "sql_instance",
-              "operator": "=~",
-              "value": "/^$InstanceName$/"
-            },
-            {
-              "condition": "AND",
-              "key": "counter",
-              "operator": "=",
-              "value": "Log File(s) Used Size (KB)"
-            },
-            {
-              "condition": "AND",
-              "key": "database_name",
-              "operator": "=~",
-              "value": "/^$DatabaseName$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Log File Used",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "decimals": 3,
-          "format": "kbytes",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "InfluxDB",
-      "fill": 1,
-      "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
-        "y": 42
+        "y": 51
       },
-      "id": 26,
+      "id": 50,
       "legend": {
         "alignAsTable": true,
-        "avg": false,
-        "current": true,
+        "avg": true,
+        "current": false,
         "max": false,
         "min": false,
         "rightSide": true,
         "show": true,
-        "sort": "current",
+        "sort": "avg",
         "sortDesc": true,
         "total": false,
         "values": true
@@ -2086,27 +2529,35 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "$tag_instance",
+          "alias": "$tag_database_name | AllFiles",
           "groupBy": [
             {
               "params": [
-                "instance"
+                "database_name"
               ],
               "type": "tag"
             }
           ],
-          "measurement": "sqlserver_performance",
+          "measurement": "sqlserver_database_io",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"read_bytes\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND  \"database_id\" >2) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
-                  "value"
+                  "read_bytes"
                 ],
                 "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
               }
             ]
           ],
@@ -2118,27 +2569,103 @@
             },
             {
               "condition": "AND",
-              "key": "counter",
-              "operator": "=",
-              "value": "Log File(s) Size (KB)"
-            },
-            {
-              "condition": "AND",
               "key": "database_name",
               "operator": "=~",
               "value": "/^$DatabaseName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "logical_filename",
+              "operator": "!=",
+              "value": "RBPEX"
             }
           ]
+        },
+        {
+          "alias": "$tag_database_name | RBPEX",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"read_bytes\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND   \"database_id\" = 0) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Tempdb | AllFiles",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"write_bytes\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND  \"database_id\" = 2 ) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Log File Size",
+      "title": "RBPEX Vs Data Files Read Bytes/sec",
       "tooltip": {
         "shared": true,
-        "sort": 2,
+        "sort": 0,
         "value_type": "individual"
       },
       "type": "graph",
@@ -2151,8 +2678,7 @@
       },
       "yaxes": [
         {
-          "decimals": 3,
-          "format": "kbytes",
+          "format": "bytes",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -2160,7 +2686,7 @@
           "show": true
         },
         {
-          "format": "short",
+          "format": "bytes",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -2172,9 +2698,624 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 51
+      },
+      "id": 51,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "$tag_database_name | AllFiles",
+          "groupBy": [
+            {
+              "params": [
+                "database_name"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "sqlserver_database_io",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"write_bytes\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND \"database_id\" >2) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "write_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "1s"
+                ],
+                "type": "non_negative_derivative"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "sql_instance",
+              "operator": "=~",
+              "value": "/^$InstanceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "database_name",
+              "operator": "=~",
+              "value": "/^$DatabaseName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "logical_filename",
+              "operator": "!=",
+              "value": "RBPEX"
+            }
+          ]
+        },
+        {
+          "alias": "$tag_database_name | RBPEX",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"write_bytes\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND \"database_id\" = 0) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Tempdb | AllFiles",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": " SELECT  non_negative_derivative(sum(\"write_bytes\"),1s)  FROM \"sqlserver_database_io\" WHERE (\"sql_instance\" =~ /^$InstanceName$/ AND \"database_name\" =~ /^$DatabaseName$/ AND  \"database_id\" = 2 ) AND $timeFilter GROUP BY \"database_name\", TIME(15s)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "RBPEX Vs Data Files Write Bytes/sec",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      },
+      "id": 23,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 34
+          },
+          "id": 25,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "hideZero": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_instance",
+              "groupBy": [
+                {
+                  "params": [
+                    "instance"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "sqlserver_performance",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "sql_instance",
+                  "operator": "=~",
+                  "value": "/^$InstanceName$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "counter",
+                  "operator": "=",
+                  "value": "Data File(s) Size (KB)"
+                },
+                {
+                  "condition": "AND",
+                  "key": "database_name",
+                  "operator": "=~",
+                  "value": "/^$DatabaseName$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Data File Size",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": 3,
+              "format": "kbytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 34
+          },
+          "id": 27,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_instance",
+              "groupBy": [
+                {
+                  "params": [
+                    "instance"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "sqlserver_performance",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "sql_instance",
+                  "operator": "=~",
+                  "value": "/^$InstanceName$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "counter",
+                  "operator": "=",
+                  "value": "Log File(s) Used Size (KB)"
+                },
+                {
+                  "condition": "AND",
+                  "key": "database_name",
+                  "operator": "=~",
+                  "value": "/^$DatabaseName$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Log File Used",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": 3,
+              "format": "kbytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "fill": 1,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 42
+          },
+          "id": 26,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {},
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "$tag_instance",
+              "groupBy": [
+                {
+                  "params": [
+                    "instance"
+                  ],
+                  "type": "tag"
+                }
+              ],
+              "measurement": "sqlserver_performance",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "sql_instance",
+                  "operator": "=~",
+                  "value": "/^$InstanceName$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "counter",
+                  "operator": "=",
+                  "value": "Log File(s) Size (KB)"
+                },
+                {
+                  "condition": "AND",
+                  "key": "database_name",
+                  "operator": "=~",
+                  "value": "/^$DatabaseName$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Log File Size",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": 3,
+              "format": "kbytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Database File Size",
+      "type": "row"
     }
   ],
-  "refresh": "10s",
+  "refresh": false,
   "schemaVersion": 18,
   "style": "dark",
   "tags": [
@@ -2185,8 +3326,8 @@
       {
         "allValue": null,
         "current": {
-          "text": "sqlscale",
-          "value": "sqlscale"
+          "text": "sqlscalewest",
+          "value": "sqlscalewest"
         },
         "datasource": "InfluxDB",
         "definition": " select sql_instance from (select  \"sql_instance\", LAST(\"engine_edition\")  from \"sqlserver_server_properties\" where  \"engine_edition\" = 5 and $timeFilter  GROUP BY sql_instance)",
@@ -2210,18 +3351,18 @@
       {
         "allValue": null,
         "current": {
-          "text": "hsvldb",
-          "value": "hsvldb"
+          "text": "TPCE_HS_600U",
+          "value": "TPCE_HS_600U"
         },
         "datasource": "InfluxDB",
-        "definition": "SHOW TAG VALUES  FROM \"sqlserver_server_properties\" WITH KEY=\"database_name\"  WHERE $timeFilter  AND sql_instance =~  /$InstanceName/",
+        "definition": "SHOW TAG VALUES  FROM \"sqlserver_db_resource_governance\" WITH KEY=\"database_name\"  WHERE $timeFilter  AND sql_instance =~  /$InstanceName/",
         "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "DatabaseName",
         "options": [],
-        "query": "SHOW TAG VALUES  FROM \"sqlserver_server_properties\" WITH KEY=\"database_name\"  WHERE $timeFilter  AND sql_instance =~  /$InstanceName/",
+        "query": "SHOW TAG VALUES  FROM \"sqlserver_db_resource_governance\" WITH KEY=\"database_name\"  WHERE $timeFilter  AND sql_instance =~  /$InstanceName/",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -2235,7 +3376,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -2266,5 +3407,5 @@
   "timezone": "",
   "title": "SQL DB  Storage",
   "uid": "sqldbstorage",
-  "version": 11
+  "version": 21
 }
