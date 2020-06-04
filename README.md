@@ -84,12 +84,12 @@ GO
 ```
 
 ## Edit the telegraf configuration file
-Edit the `/etc/telegraf/telegraf.conf` to all one connection string per each database you want to monitor. Optionally, modify the `/etc/telegraf/telegraf.conf` with the options specified [here](https://github.com/influxdata/telegraf/plugins/inputs/sqlserver)
+Edit the `/etc/telegraf/telegraf.conf` to add one connection string per each database you want to monitor. Optionally, modify the `/etc/telegraf/telegraf.conf` with the options specified [here](https://github.com/influxdata/telegraf/plugins/inputs/sqlserver)
 
 **Note:** For **Azure SQL Database**, you would need one connection string per database you are monitoring specifying the right database name and *not* `master`. An example snippet for monitoring two databases, each on a different logical SQL server, is shown below:
 ```
 [[inputs.sqlserver]]
-servers = ["Server=server1.database.windows.net;Port=1433;User Id=telegraf;Password=Mystringpassword1!;database=myazuredb1;app name=telegraf;"
+servers = ["Server=server1.database.windows.net;Port=1433;User Id=telegraf;Password=Mystrongpassword1!;database=myazuredb1;app name=telegraf;"
 ,"Server=server2.database.windows.net;Port=1433;User Id=telegraf;Password=Mystrongpassword1!;database=myazuredb2;app name=telegraf;"]
 
 query_version = 2
@@ -115,7 +115,7 @@ database = "telegraf"
  - Default polling interval is 10 seconds, if you want to change that have to add /change the Agent Interval value.
 
 ## Start the telegraf service
-Use the commands below to start telegraf:
+Use the commands below to start telegraf and check its status:
 ```
 sudo systemctl start telegraf
 sudo systemctl status telegraf
