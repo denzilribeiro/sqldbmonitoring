@@ -1,5 +1,5 @@
 # Azure SQL Database / Managed Instance monitoring
-Solution for near-realtime monitoring on Azure SQL database and Azure SQL Managed instance using the [telegraf SQL plugin](https://github.com/influxdata/telegraf/plugins/inputs/sqlserver) . A previous version was covered under the blog [Near-realtime monitoring for managed instances](https://techcommunity.microsoft.com/t5/DataCAT/Real-time-performance-monitoring-for-Azure-SQL-Database-Managed/ba-p/305537)
+Solution for near-realtime monitoring on Azure SQL database and Azure SQL Managed instance using the [telegraf SQL plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/sqlserver) . A previous version was covered under the blog [Near-realtime monitoring for managed instances](https://techcommunity.microsoft.com/t5/DataCAT/Real-time-performance-monitoring-for-Azure-SQL-Database-Managed/ba-p/305537)
 
 ## VM Setup
 Create an Ubuntu VM in a new or an existing resource group with a data disk and mount the attached data disk in the Linux OS. Other Linux distros will work as well, but commands may need to be adjusted accordingly.
