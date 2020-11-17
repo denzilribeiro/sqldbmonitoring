@@ -44,8 +44,8 @@ sudo ./monitoringsetup.sh
 If you want to install the latest nightly build with most recent telegraf changes
 
 ```
-cd $HOME/sqldbmonitoring nightly
-sudo ./monitoringsetup.sh
+cd $HOME/sqldbmonitoring 
+sudo ./monitoringsetup.sh nightly
 ```
 
 ## Install, Configure and start InfluxDB
