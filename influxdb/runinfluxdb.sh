@@ -9,5 +9,5 @@ sudo docker run --detach --net=host \
 	--hostname influxdb \
 	--restart=always \
  	-p 8086:8086 \
-        --name influxdb influxdb:latest
+        --name influxdb influxdb:1.8
 
